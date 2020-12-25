@@ -18,9 +18,11 @@ class Game:
         self.isDone = False
         self.size = self.width, self.height
         self.clock = pygame.time.Clock()
-        self.block_size = (self.width - (self.dimension + 1) * self.margin) // self.dimension
+        self.block_size = (self.width - (self.dimension + 1)
+                           * self.margin) // self.dimension
         # initialize a random tile with power = 1, or value = 2^1 = 2
-        self.board.set_tile_power((randint(0, self.dimension - 1), randint(0, self.dimension - 1)), 1)
+        self.board.set_tile_power(
+            (randint(0, self.dimension - 1), randint(0, self.dimension - 1)), 1)
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption('2048')

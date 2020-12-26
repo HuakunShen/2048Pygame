@@ -203,6 +203,9 @@ class Board:
                     result.append((row_index, col_index))
         return result
 
+    def has_empty_tiles(self):
+        return len(self.get_empty_tiles_pos()) == 0
+
     def move(self, direction):
         score = 0
         changed = False

@@ -74,6 +74,8 @@ class Tile:
 
     @staticmethod
     def value_to_power(value):
+        if value is None:
+            return None
         if type(value) == int:
             power = math.log(value, 2)
             if power != int(power):
@@ -111,7 +113,7 @@ class Board:
         self.grid = []
         self.dimension = dimension
         self.bg_color = (172, 157, 142)
-        if matrix:
+        if matrix is not None:
             self.construct_with_matrix(matrix)
             return
         for i in range(4):
@@ -126,8 +128,9 @@ class Board:
             if len(row) != num_row:
                 raise Exception("not a matrix, must be nxn matrix")
             for val in row:
-                if type(val) is not int:
-                    raise Exception("matrix value invalid, must be all int")
+                if type(val) is not int and val is not None:
+                    raise Exception(
+                        "matrix value invalid, must be int or None")
         # construct
         self.grid = []
         for matrix_row in matrix:
@@ -296,3 +299,7 @@ class Board:
         if col < self.dimension - 1:
             result.append((row, col + 1))
         return result
+
+
+if __name__ == "__main__":
+    pass

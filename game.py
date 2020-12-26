@@ -15,14 +15,15 @@ class Game:
         self.height = 950
         self.key_down = False
         self.margin = margin
-        self.isDone = False
+        self.isDone = self.board.is_done()
         self.size = self.width, self.height
         self.clock = pygame.time.Clock()
         self.block_size = (self.width - (self.dimension + 1)
                            * self.margin) // self.dimension
         # initialize 2 random tiles
-        for _ in range(2):
-            self.set_random_tile()
+        if len(self.board.get_empty_tiles_pos()) != 0 and matrix is None:
+            for _ in range(2):
+                self.set_random_tile()
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption('2048')
@@ -59,7 +60,6 @@ class Game:
 
     def main(self):
         while True:
-            self.clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -68,19 +68,14 @@ class Game:
                         self.move(KEY_MAP[event.key])
                 elif event.type == pygame.KEYUP:
                     self.handle_key_up(event)
-            self.screen.fill(self.board.bg_color)
-            self.draw_grid()
-            self.update_score()
-            if self.board.is_done():
-                self.isDone = True
-            self.update_msg()
-            pygame.display.flip()
+            self.update_ui()
         pygame.quit()
 
     def move(self, key):
         self.key_down = True
         score = 0
         changed = False
+        is_valid_move = False
         if key == K_r:
             print('restart')
             self.__init__(matrix=self.matrix)
@@ -94,7 +89,7 @@ class Game:
         if changed:
             # add a random tile, 2 or 4
             self.set_random_tile()
-        return score
+        return score, changed
 
     def set_random_tile(self):
         is_4 = random() < 0.1
@@ -127,12 +122,16 @@ class Game:
 
 
 if __name__ == "__main__":
-    # m = [
-    #     [2, 2, 4, 8],
-    #     [2, 2, 4, 8],
-    #     [2, 2, 4, 8],
-    #     [2, 2, 4, 8],
-    # ]
-    # game = Game(matrix=m)
-    game = Game()
+    m = [
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+    ]
+    m = [[2, None, None, None],
+         [2, None, None, None],
+         [None, None, None, None],
+         [None, None, None, None]]
+    game = Game(matrix=m)
+    # game = Game()
     game.main()

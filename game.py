@@ -1,24 +1,23 @@
-import sys
-import pygame
 from gamestate import GameState
-from constants import *
 from components import *
-from random import randint, random
 
 
 class Game(object):
     def __init__(self, dimension=4, score=0, matrix=None, margin=10, width=800, height=950):
-        self.game_state = GameState(dimension=dimension, score=score, matrix=matrix)
+        self.game_state = GameState(
+            dimension=dimension, score=score, matrix=matrix)
         self.width = width
         self.height = height
         self.clock = pygame.time.Clock()
         self.margin = margin
         self.key_down = False
-        self.is_done = self.game_state.is_done()
         self.block_size = (self.width - (dimension + 1) * self.margin) // dimension
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('2048')
+
+    def is_done(self):
+        return self.game_state.get_is_done()
 
     def handle_key_up(self):
         self.key_down = False
@@ -31,7 +30,7 @@ class Game(object):
 
     def update_msg(self):
         font = pygame.font.Font(None, 32)
-        text_content = 'Game ends, press r to restart' if self.is_done else "Click 'q' to quit the game"
+        text_content = 'Game ends, press r to restart' if self.is_done() else "Click 'q' to quit the game"
         text = font.render(text_content, True, (255, 255, 255))
         self.screen.blit(text, (50, 870))
 
@@ -60,8 +59,6 @@ class Game(object):
         self.screen.fill(self.game_state.get_board().bg_color)
         self.draw_grid()
         self.update_score()
-        if self.game_state.is_done():
-            self.is_done = True
         self.update_msg()
         pygame.display.flip()
 
@@ -71,9 +68,7 @@ class Game(object):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 elif event.type == pygame.KEYDOWN:
-                    print("key down")
                     if event.key in KEY_MAP:
-                        print(KEY_MAP[event.key])
                         self.game_state.move(KEY_MAP[event.key])
                 elif event.type == pygame.KEYUP:
                     self.handle_key_up()

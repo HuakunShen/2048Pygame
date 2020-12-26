@@ -20,9 +20,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.block_size = (self.width - (self.dimension + 1)
                            * self.margin) // self.dimension
-        # initialize a random tile with power = 1, or value = 2^1 = 2
-        self.board.set_tile_power(
-            (randint(0, self.dimension - 1), randint(0, self.dimension - 1)), 1)
+        # initialize 2 random tiles
+        for _ in range(2):
+            self.set_random_tile()
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption('2048')
@@ -47,6 +47,16 @@ class Game:
                 textpos.center = rect.center
                 self.screen.blit(text, textpos)
 
+    def update_ui(self):
+        self.clock.tick(30)
+        self.screen.fill(self.board.bg_color)
+        self.draw_grid()
+        self.update_score()
+        if self.board.is_done():
+            self.isDone = True
+        self.update_msg()
+        pygame.display.flip()
+
     def main(self):
         while True:
             self.clock.tick(30)
@@ -54,11 +64,10 @@ class Game:
                 if event.type == pygame.QUIT:
                     return
                 elif event.type == pygame.KEYDOWN:
-                    self.handle_key_down(event)
-                    print(self.board)
+                    if event.key in KEY_MAP:
+                        self.move(KEY_MAP[event.key])
                 elif event.type == pygame.KEYUP:
                     self.handle_key_up(event)
-
             self.screen.fill(self.board.bg_color)
             self.draw_grid()
             self.update_score()
@@ -66,41 +75,37 @@ class Game:
                 self.isDone = True
             self.update_msg()
             pygame.display.flip()
-
         pygame.quit()
 
-    def handle_key_down(self, event):
+    def move(self, key):
         self.key_down = True
         score = 0
         changed = False
-        if event.key == pygame.K_r:
+        if key == K_r:
             print('restart')
             self.__init__(matrix=self.matrix)
             return
-        elif event.key == pygame.K_q:
+        elif key == K_q:
             print('quit game')
             sys.exit(0)
         if not self.isDone:
-            if event.key == pygame.K_LEFT:
-                score, changed = self.board.move(LEFT)
-            elif event.key == pygame.K_RIGHT:
-                score, changed = self.board.move(RIGHT)
-            elif event.key == pygame.K_UP:
-                score, changed = self.board.move(UP)
-            elif event.key == pygame.K_DOWN:
-                score, changed = self.board.move(DOWN)
-            else:
-                return
+            score, changed = self.board.move(key)
         self.score += score
         if changed:
             # add a random tile, 2 or 4
-            is_4 = random() < 0.1
-            empty_pos = self.board.get_empty_tiles_pos()
-            target_pos = empty_pos[randint(0, len(empty_pos) - 1)]
-            if is_4:
-                self.board.set_tile_power(target_pos, 2)
-            else:
-                self.board.set_tile_power(target_pos, 1)
+            self.set_random_tile()
+        return score
+
+    def set_random_tile(self):
+        is_4 = random() < 0.1
+        target_pos = self.get_new_tile_position()
+        self.board.set_tile_power(target_pos, 2 if is_4 else 1)
+
+    def get_new_tile_position(self):
+        is_4 = random() < 0.1
+        empty_pos = self.board.get_empty_tiles_pos()
+        target_pos = empty_pos[randint(0, len(empty_pos) - 1)]
+        return target_pos
 
     def handle_key_up(self, event):
         self.key_down = False
@@ -122,12 +127,12 @@ class Game:
 
 
 if __name__ == "__main__":
-    m = [
-        [2, 2, 4, 8],
-        [2, 2, 4, 8],
-        [2, 2, 4, 8],
-        [2, 2, 4, 8],
-    ]
+    # m = [
+    #     [2, 2, 4, 8],
+    #     [2, 2, 4, 8],
+    #     [2, 2, 4, 8],
+    #     [2, 2, 4, 8],
+    # ]
     # game = Game(matrix=m)
     game = Game()
     game.main()

@@ -77,7 +77,8 @@ class Tile:
         if type(value) == int:
             power = math.log(value, 2)
             if power != int(power):
-                raise Exception("value cannot be converted to power, must be power of 2")
+                raise Exception(
+                    "value cannot be converted to power, must be power of 2")
         else:
             raise Exception("value must be int")
         return int(power)
@@ -202,19 +203,19 @@ class Board:
     def move(self, direction):
         score = 0
         changed = False
-        if direction == UP:
+        if direction == K_UP:
             self.rotate_cw()
             self.rotate_cw()
             score, changed = self.move_down()
             self.rotate_cw()
             self.rotate_cw()
-        elif direction == DOWN:
+        elif direction == K_DOWN:
             score, changed = self.move_down()
-        elif direction == LEFT:
+        elif direction == K_LEFT:
             self.rotate_ccw()
             score, changed = self.move_down()
             self.rotate_cw()
-        elif direction == RIGHT:
+        elif direction == K_RIGHT:
             self.rotate_cw()
             score, changed = self.move_down()
             self.rotate_ccw()
@@ -224,7 +225,8 @@ class Board:
         result = ''
         for row in self.grid:
             for tile in row:
-                value = str(0) if not tile.get_value() else str(tile.get_value())
+                value = str(0) if not tile.get_value() else str(
+                    tile.get_value())
                 result += value + ', '
             result += '\n'
         return result
@@ -238,11 +240,13 @@ class Board:
         changed = False
         for row_index in range(self.dimension - 1, -1, -1):  # 从倒数第二行数到第0行
             row = self.grid[row_index]
-            for col_index in range(len(row)):  # iterate through every tile in the row
+            # iterate through every tile in the row
+            for col_index in range(len(row)):
                 tile = row[col_index]
                 if tile.power is None:  # we don't care if a tile is None, do not move it
                     continue
-                for row_index_next in range(row_index + 1, self.dimension):  # 从倒数第二行开始向下merge，直到最后一行
+                # 从倒数第二行开始向下merge，直到最后一行
+                for row_index_next in range(row_index + 1, self.dimension):
                     # iterate through every tile in the column
                     next_tile = self.grid[row_index_next][col_index]
                     if next_tile.power is None:  # if next tile is empty then just move it

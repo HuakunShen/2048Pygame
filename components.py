@@ -1,31 +1,29 @@
 import math
 import numpy as np
+import pandas as pd
 from constants import *
 
 
 class Tile:
-    bg_colors = {
-        "BACKGROUND": (172, 157, 142),
-        None: (193, 179, 165),
-        1: (233, 221, 209),
-        2: (232, 217, 187),
-        3: (235, 160, 99),
-        4: (237, 128, 78),
-        5: (237, 100, 75),
-        6: (236, 69, 43),
-        7: (231, 197, 90),
-        8: (231, 197, 91),
-        9: (231, 188, 55),
-        10: (230, 185, 38),
-        11: (230, 181, 19)
-    }
-
     def __init__(self, power=None):
         self.power = power
         self.value = int(2 ** self.power) if self.power else None
         self.color = (255, 255, 255)
-        self.bg_color = Tile.bg_colors[self.power]
+        self.bg_color = Tile.translate_bg_color(self.power)
         self.has_merged = False  # in one round, a tile can be merged only once
+
+    @staticmethod
+    def translate_bg_color(val):
+        bg_color = None
+        if type(val) is int and val > 11:
+            bg_color = BG_COLOR_MAP[6]
+        elif type(val) is int and val < 0:
+            raise ValueError("Negative Number is invalid")
+        elif val in BG_COLOR_MAP:
+            bg_color = BG_COLOR_MAP[val]
+        else:
+            raise ValueError("Invalid Input")
+        return bg_color
 
     def set_has_merged(self, value):
         self.has_merged = value
@@ -38,32 +36,26 @@ class Tile:
         increment tile power and value
         :return:
         """
-        self.power += 1
-        self.value = int(2 ** self.power) if self.power else None
-        self.update_color()
+        self.update_by_power(self.power + 1)
 
     def update_color(self):
         self.bg_color = Tile.get_color_by_power(self.power)
 
     @staticmethod
     def get_color_by_power(power):
-        if power in Tile.bg_colors:
-            return Tile.bg_colors[power]
-        else:
-            return Tile.bg_colors[6]
+        return Tile.translate_bg_color(power)
 
     @staticmethod
     def get_color_by_value(value):
         if type(value) == int:
             power = math.log(value, 2)
             if type(power) == float and power == power // 1:
-                power = power // 1
+                power = int(power // 1)
             else:
-                print("Error: value input is not correct")
-                exit(1)
+                raise ValueError("Error: value input is not correct")
         else:
-            power = 6
-        return Tile.bg_colors[power]
+            return Tile.translate_bg_color(value)
+        return Tile.translate_bg_color(power)
 
     @staticmethod
     def power_to_value(power):
@@ -79,10 +71,10 @@ class Tile:
         if type(value) == int:
             power = math.log(value, 2)
             if power != int(power):
-                raise Exception(
+                raise ValueError(
                     "value cannot be converted to power, must be power of 2")
         else:
-            raise Exception("value must be int")
+            raise ValueError("value must be int")
         return int(power)
 
     def get_bg_color(self):
@@ -94,10 +86,13 @@ class Tile:
     def get_power(self):
         return self.power
 
-    def set_power(self, power):
-        self.power = power
+    def update_by_power(self, power):
+        self.set_power(power)
         self.value = Tile.power_to_value(power)
         self.update_color()
+
+    def set_power(self, power):
+        self.power = power
 
     def get_value(self):
         return self.value
@@ -107,20 +102,15 @@ class Tile:
 
 
 class Board:
-
     def __init__(self, dimension=4, matrix=None):
         # initialize grid to 4x4 tile board
-        self.grid = []
+        self.grid = None
         self.dimension = dimension
-        self.bg_color = (172, 157, 142)
+        self.bg_color = BG_COLOR_MAP["BACKGROUND"]
         if matrix is not None:
             self.construct_with_matrix(matrix)
-            return
-        for i in range(4):
-            row = []
-            for j in range(4):
-                row.append(Tile())
-            self.grid.append(row)
+        else:
+            self.grid = [[Tile() for i in range(dimension)] for j in range(dimension)]
 
     def construct_with_matrix(self, matrix):
         num_row = len(matrix)
@@ -129,37 +119,23 @@ class Board:
                 raise Exception("not a matrix, must be nxn matrix")
             for val in row:
                 if type(val) is not int and val is not None:
-                    raise Exception(
-                        "matrix value invalid, must be int or None")
+                    raise Exception("matrix value invalid, must be int or None")
         # construct
-        self.grid = []
-        for matrix_row in matrix:
-            row = []
-            for val in matrix_row:
-                row.append(Tile(Tile.value_to_power(val)))
-            self.grid.append(row)
+        self.grid = [[Tile(Tile.value_to_power(val)) for val in matrix_row] for matrix_row in matrix]
 
     def get_value_board(self):
         """
         convert self(board object) to a 2D array of pure integers (values)
         :return: 2D arrays of values
         """
-        value_board = []
-        for row in self.grid:
-            value_row = [tile.get_value() for tile in row]
-            value_board.append(value_row)
-        return value_board
+        return np.array([[tile.get_value() for tile in row] for row in self.grid])
 
     def get_power_board(self):
         """
         convert self(board object) to a 2D array of pure integers (powers)
         :return: 2D arrays of powers
         """
-        power_board = []
-        for row in self.grid:
-            power_row = [tile.get_power() for tile in row]
-            power_board.append(power_row)
-        return power_board
+        return np.array([[tile.get_power() for tile in row] for row in self.grid])
 
     def get_grid(self):
         return self.grid
@@ -168,7 +144,7 @@ class Board:
         return self.grid[coordinate[0]][coordinate[1]]
 
     def set_tile_power(self, coordinate, power):
-        self.get_tile(coordinate).set_power(power)
+        self.get_tile(coordinate).update_by_power(power)
 
     def rotate_cw(self):
         """
@@ -198,8 +174,7 @@ class Board:
         for row_index in range(len(self.grid)):
             row = self.grid[row_index]
             for col_index in range(len(row)):
-                col = row[col_index]
-                if self.grid[row_index][col_index].get_power() is None:
+                if row[col_index].get_power() is None:
                     result.append((row_index, col_index))
         return result
 
@@ -209,33 +184,26 @@ class Board:
     def move(self, direction):
         score = 0
         changed = False
-        if direction == K_UP:
+        if direction == UP:
             self.rotate_cw()
             self.rotate_cw()
             score, changed = self.move_down()
             self.rotate_cw()
             self.rotate_cw()
-        elif direction == K_DOWN:
+        elif direction == DOWN:
             score, changed = self.move_down()
-        elif direction == K_LEFT:
+        elif direction == LEFT:
             self.rotate_ccw()
             score, changed = self.move_down()
             self.rotate_cw()
-        elif direction == K_RIGHT:
+        elif direction == RIGHT:
             self.rotate_cw()
             score, changed = self.move_down()
             self.rotate_ccw()
         return score, changed
 
     def __str__(self):
-        result = ''
-        for row in self.grid:
-            for tile in row:
-                value = str(0) if not tile.get_value() else str(
-                    tile.get_value())
-                result += value + ', '
-            result += '\n'
-        return result
+        return str(pd.DataFrame(data=np.array(self.get_value_board())))
 
     def move_down(self):
         """
@@ -256,15 +224,15 @@ class Board:
                     # iterate through every tile in the column
                     next_tile = self.grid[row_index_next][col_index]
                     if next_tile.power is None:  # if next tile is empty then just move it
-                        next_tile.set_power(tile.get_power())
-                        tile.set_power(None)
+                        next_tile.update_by_power(tile.get_power())
+                        tile.update_by_power(None)
                         tile = next_tile
                         changed = True
                     elif tile.power == next_tile.power and not next_tile.get_has_merged():
                         # if 2 tile has equal power/value, merge them and delete one
                         next_tile.increment()
                         next_tile.set_has_merged(True)
-                        tile.set_power(None)
+                        tile.update_by_power(None)
                         score += next_tile.get_value()
                         changed = True
                         break
@@ -277,19 +245,6 @@ class Board:
             for tile in row:
                 tile.set_has_merged(False)
         return score, changed
-
-    def is_done(self):
-        value_matrix = self.get_value_board()
-        for row_index in range(len(self.grid)):
-            row = self.grid[row_index]
-            for col_index in range(len(row)):
-                neighbors = self.get_available_neighbors(row_index, col_index)
-                for neighbor in neighbors:
-                    if value_matrix[neighbor[0]][neighbor[1]] == value_matrix[row_index][col_index]:
-                        return False
-                    if value_matrix[row_index][col_index] is None:
-                        return False
-        return True
 
     def get_available_neighbors(self, row, col):
         result = []
@@ -305,4 +260,18 @@ class Board:
 
 
 if __name__ == "__main__":
-    pass
+    m = [
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+        [2, 2, 4, 8],
+    ]
+    m = np.array([[2, None, None, None],
+                  [2, None, None, None],
+                  [None, None, None, None],
+                  [None, None, None, None]])
+    # board = Board()
+    board = Board(matrix=m)
+    print(board)
+    print(board.get_value_board())
+    print(board.get_power_board())

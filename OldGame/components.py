@@ -110,7 +110,8 @@ class Board:
         if matrix is not None:
             self.construct_with_matrix(matrix)
         else:
-            self.grid = [[Tile() for i in range(dimension)] for j in range(dimension)]
+            self.grid = [[Tile() for i in range(dimension)]
+                         for j in range(dimension)]
 
     def construct_with_matrix(self, matrix):
         num_row = len(matrix)
@@ -119,9 +120,11 @@ class Board:
                 raise Exception("not a matrix, must be nxn matrix")
             for val in row:
                 if type(val) is not int and val is not None:
-                    raise Exception("matrix value invalid, must be int or None")
+                    raise Exception(
+                        "matrix value invalid, must be int or None")
         # construct
-        self.grid = [[Tile(Tile.value_to_power(val)) for val in matrix_row] for matrix_row in matrix]
+        self.grid = [[Tile(Tile.value_to_power(val))
+                      for val in matrix_row] for matrix_row in matrix]
 
     def get_value_board(self):
         """
@@ -219,7 +222,7 @@ class Board:
                 tile = row[col_index]
                 if tile.power is None:  # we don't care if a tile is None, do not move it
                     continue
-                # 从倒数第二行开始向下merge，直到最后一行
+                # 从倒数第二行开始向下merge，直到第一行
                 for row_index_next in range(row_index + 1, self.dimension):
                     # iterate through every tile in the column
                     next_tile = self.grid[row_index_next][col_index]

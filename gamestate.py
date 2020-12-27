@@ -1,7 +1,9 @@
 import sys
 import copy
 import random
-from components import *
+import constants
+import numpy as np
+from components import Board, Tile
 
 
 class GameState:
@@ -10,7 +12,7 @@ class GameState:
         self._dimension = dimension
         self._init_matrix = matrix
         self._board = Board(matrix=self._init_matrix)
-        random.seed(2048)
+        random.seed(constants.RANDOM_SEED)
         if len(self._board.get_empty_tiles_pos()) != 0 and matrix is None:
             for _ in range(2):
                 self.set_random_tile()
@@ -52,13 +54,17 @@ class GameState:
         target_pos = self._get_new_tile_position()
         self._board.set_tile_power(target_pos, 2 if is_4 else 1)
 
+    def restart(self):
+        random.seed(constants.RANDOM_SEED)
+        self.move(constants.K_r)
+
     def move(self, key):
         score = 0
         changed = False
-        if key == K_r:
+        if key == constants.K_r:
             print('restart')
             self.__init__(matrix=self._init_matrix)
-        elif key == K_q:
+        elif key == constants.K_q:
             print('quit game')
             sys.exit(0)
         else:
@@ -71,6 +77,12 @@ class GameState:
                 self.set_random_tile()
         return score, changed
 
+    def random_move(self):
+        return self.move(constants.ARROW_KEYS[random.randint(0, 3)])
+
+    def copy(self):
+        return copy.deepcopy(self)
+
 
 if __name__ == '__main__':
     m = np.array([[2, None, None, 8],
@@ -79,5 +91,5 @@ if __name__ == '__main__':
                   [None, None, None, None]])
     game = GameState(matrix=m)
     print(game.get_board())
-    game.move(DOWN)
+    game.move(constants.DOWN)
     print(game.get_board())

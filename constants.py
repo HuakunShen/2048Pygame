@@ -1,12 +1,17 @@
 # %%
 import pygame
 
+RANDOM_SEED = 3
+
 UP = "UP"
 DOWN = "DOWN"
 LEFT = "LEFT"
 RIGHT = "RIGHT"
 K_r = "r"
 K_q = "q"
+# %%
+ARROW_KEYS = [UP, DOWN, LEFT, RIGHT]
+
 # %%
 KEY_MAP = {
     pygame.K_r: K_r,

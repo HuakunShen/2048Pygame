@@ -1,20 +1,26 @@
+import copy
 from gamestate import GameState
 from components import *
 
 
 class Game(object):
-    def __init__(self, dimension=4, score=0, matrix=None, margin=10, width=800, height=950):
-        self.game_state = GameState(
-            dimension=dimension, score=score, matrix=matrix)
+    def __init__(self, dimension=4, score=0, init_matrix=None, margin=10, width=800, height=950, game_state=None):
+        self.game_state = game_state if game_state is not None else GameState(dimension=dimension, score=score,
+                                                                              matrix=init_matrix)
         self.width = width
         self.height = height
+        self.init_matrix = init_matrix
         self.clock = pygame.time.Clock()
         self.margin = margin
         self.key_down = False
-        self.block_size = (self.width - (dimension + 1) * self.margin) // dimension
+        self.block_size = (self.width - (dimension + 1)
+                           * self.margin) // dimension
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('2048')
+
+    def set_game_state(self, game_state: GameState):
+        self.game_state = game_state.copy()
 
     def is_done(self):
         return self.game_state.get_is_done()
@@ -30,7 +36,8 @@ class Game(object):
 
     def update_msg(self):
         font = pygame.font.Font(None, 32)
-        text_content = 'Game ends, press r to restart' if self.is_done() else "Click 'q' to quit the game"
+        text_content = 'Game ends, press r to restart' if self.is_done(
+        ) else "Click 'q' to quit the game"
         text = font.render(text_content, True, (255, 255, 255))
         self.screen.blit(text, (50, 870))
 

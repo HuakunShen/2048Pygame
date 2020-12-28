@@ -1,7 +1,7 @@
 # %%
 import pygame
 
-RANDOM_SEED = 3
+RANDOM_SEED = 2048
 
 UP = "UP"
 DOWN = "DOWN"

@@ -33,7 +33,6 @@ class Game(object):
         self.static_board = static_board
         random.seed(self.seed)
         np.random.seed(self.seed)
-        print(f"init random seed to {self.seed}")
         self.matrix = matrix if matrix is not None else self.static_board.get_init_matrix(
             width, height)
         self.score = 0
@@ -43,7 +42,6 @@ class Game(object):
 
     def set_seed(self, seed: int = constants.SEED):
         self.seed = seed
-        print(f"set random seed to {self.seed}")
 
     def get_matrix(self):
         return self.matrix
@@ -94,7 +92,7 @@ class GameUI(object):
         self.height = height
         self.margin = margin
         self.block_size = (self.width - (self.game.get_matrix().shape[0] + 1) * margin) // \
-                          self.game.get_matrix().shape[0]
+            self.game.get_matrix().shape[0]
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('2048')
@@ -166,12 +164,12 @@ if __name__ == "__main__":
     #     [16, 32, 16, 16],
     #     [32, 16, 32, 0]
     # ])
-    # game = GameUI()
-    # game.main()
+    game = GameUI()
+    game.main()
     # np.random.seed(10)
-    g = Game(seed=10)
+    # g = Game(seed=10)
     # g.set_seed(10)
-    print(NumpyStaticBoard.get_pd_df(g.get_matrix()))
+    # print(NumpyStaticBoard.get_pd_df(g.get_matrix()))
     # random.seed(0)
     # np.random.seed(100)
     # print(NumpyStaticBoard.get_init_matrix())

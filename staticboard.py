@@ -124,7 +124,6 @@ class NumpyStaticBoard(StaticBoard):
         return matrix.max()
 
     @staticmethod
-    # @njit
     def get_random_empty_cell_coordinate(matrix: np.ndarray) -> Union[np.ndarray, None]:
         empty_cell_coordinates = np.argwhere(matrix == 0)
         return None if len(empty_cell_coordinates) == 0 else empty_cell_coordinates[
@@ -135,7 +134,6 @@ class NumpyStaticBoard(StaticBoard):
         return np.zeros((width, height)).astype('int64')
 
     @staticmethod
-    @njit
     def set_random_cell(matrix: np.ndarray, inplace: bool = True) -> Tuple[np.ndarray, bool]:
         empty_cell_coordinates = np.argwhere(matrix == 0)
         empty_cell = None if len(empty_cell_coordinates) == 0 else empty_cell_coordinates[
@@ -148,13 +146,6 @@ class NumpyStaticBoard(StaticBoard):
             is_4 = random.random() < 0.1
             matrix[empty_cell[0], empty_cell[1]] = 4 if is_4 else 2
             return matrix, True
-
-    # @staticmethod
-    # def get_init_matrix1(width: int = 4, height: int = 4) -> np.ndarray:
-    #     matrix = NumpyStaticBoard.get_empty_matrix(width=width, height=height)
-    #     for _ in range(2):
-    #         NumpyStaticBoard.set_random_cell(matrix, inplace=True)
-    #     return matrix
 
     @staticmethod
     def get_init_matrix(width: int = 4, height: int = 4) -> np.ndarray:

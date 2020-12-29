@@ -4,18 +4,32 @@ import datetime
 import pandas as pd
 from game import Game
 import multiprocessing
-from player import RandomGuessAIPlayer
 from fastai.core import parallel
+from player import RandomGuessAIPlayer, BacktrackingAIPlayer
 
 goal = 2048
-seeds = list(range(1))
+seeds = list(range(100))
+# Player = RandomGuessAIPlayer
+player_type = "random"
+# player_type = "backtracking"
+
+
+def get_player(g: Game):
+    global player_type
+    if player_type == "backtracking":
+        return BacktrackingAIPlayer(game=g, searches_per_move=20, search_length=8, quiet=True, ui=False)
+    elif player_type == "random":
+        return RandomGuessAIPlayer(
+            game=g, searches_per_move=30, search_length=20, quiet=True, ui=False)
+    else:
+        raise ValueError
 
 
 def run(seed, i=0):
     global goal
+    global player_type
     g = Game(seed=seed, goal=goal)
-    player = RandomGuessAIPlayer(
-        game=g, searches_per_move=20, search_length=10, quiet=True, ui=False)
+    player = get_player(g)
     score_, max_val, runtime = player.run()
     return seed, score_, max_val, runtime
 

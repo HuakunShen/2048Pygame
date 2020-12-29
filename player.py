@@ -5,15 +5,17 @@ from typing import Union, Tuple
 from game import Game, GameUI
 from abc import ABC, abstractmethod
 from constants import UP, DOWN, LEFT, RIGHT
+from staticboard import NumpyStaticBoard
 
 
 class Player(ABC):
-    def __init__(self, game: Game, quiet: bool = False) -> None:
+    def __init__(self, game: Game, quiet: bool = False, ui: bool = True) -> None:
         """
         Init function for Player Class
         :param game: Game: game object
         :param quiet: bool: quiet mode, whether you want messages to be printed
         """
+        self.ui = ui
         self._game = game
         self._quiet = quiet
 
@@ -30,15 +32,17 @@ class Player(ABC):
         :param fps: int: frame per second of animation
         :return: Tuple[score, max value reached, runtime used]
         """
-        ui = GameUI(game=self._game, fps=fps)
+        game_ui = GameUI(game=self._game, fps=fps) if self.ui else None
         self._game.restart()
-        ui.update_ui()
+        if self.ui:
+            game_ui.update_ui()
         iteration = 0
         t_0 = time.time()
         while not self._game.get_is_done():
             move = self.get_move()
             self._game.move(move)
-            ui.update_ui()
+            if self.ui:
+                game_ui.update_ui()
             if self._game.get_is_done():
                 if not self._quiet:
                     print(
@@ -56,14 +60,24 @@ class Player(ABC):
 
 
 class RandomGuessAIPlayer(Player):
-    def __init__(self, game: Game, searches_per_move: int = 20, search_length: int = 10, quiet: bool = False):
-        super().__init__(game, quiet)
+    """
+    Sample:
+    seed_ = 44
+    g = Game(seed=seed_)
+    player = RandomGuessAIPlayer(
+        game=g, searches_per_move=20, search_length=10, ui=False)
+    score_, max_val, runtime = player.run()
+    """
+
+    def __init__(self, game: Game, searches_per_move: int = 20, search_length: int = 10, quiet: bool = False,
+                 ui: bool = True):
+        super().__init__(game, quiet, ui)
         if not self._quiet:
-            print("init random guesser AI player")
+            print("Init Random guesser AI Player")
         self.search_length = search_length
         self.searches_per_move = searches_per_move
 
-    def get_move(self):
+    def get_move(self) -> Union[UP, DOWN, LEFT, RIGHT]:
         scores = np.zeros(4)
         init_game_clone = self._game.clone()
         for first_move_i in range(4):
@@ -94,9 +108,50 @@ class RandomGuessAIPlayer(Player):
         return constants.ARROW_KEYS[np.argmax(scores)]
 
 
+class BacktrackingAIPlayer(Player):
+    def __init__(self, game: Game, search_length: int = 10, quiet: bool = False,
+                 ui: bool = True):
+        super().__init__(game, quiet, ui)
+        if not self._quiet:
+            print("Init Backtracking AI Player")
+        self.search_depth = search_length
+
+    def recurse_tree(self, matrix: np.ndarray, depth: int) -> int:
+        if depth == self.search_depth:
+            return 0
+        score = 0
+        scores1, scores2 = [], []
+        for i, move in enumerate(constants.ARROW_KEYS):
+            result_matrix, curr_score, changed = NumpyStaticBoard.move(
+                matrix=matrix, direction=move, inplace=False)
+            NumpyStaticBoard.set_random_cell(result_matrix, inplace=True)
+            # scores1.append(curr_score)
+            # scores2.append(self.recurse_tree(result_matrix, depth + 1))
+            score += curr_score
+            score += self.recurse_tree(result_matrix, depth + 1)
+        # return sum(scores1) + sum(scores2)
+        return score
+
+    def get_move(self) -> Union[UP, DOWN, LEFT, RIGHT]:
+        scores = np.zeros(4)
+        init_game_clone = self._game.clone()
+        for first_move_i in range(4):
+            game_clone1 = init_game_clone.clone()
+            first_move = constants.ARROW_KEYS[first_move_i]
+            matrix, score, changed = game_clone1.move(
+                action=first_move, inplace=True)
+            if changed:
+                scores[first_move_i] += score
+            else:
+                continue
+            score = self.recurse_tree(game_clone1.get_matrix(), 0)
+            scores[first_move_i] += score
+        return constants.ARROW_KEYS[np.argmax(scores)]
+
+
 if __name__ == '__main__':
     seed_ = 0
     g = Game(seed=seed_)
-    player = RandomGuessAIPlayer(
-        game=g, searches_per_move=20, search_length=10)
-    score_, max_val, runtime = player.run()
+    player = BacktrackingAIPlayer(
+        game=g, search_length=7, quiet=False, ui=True)
+    player.run(fps=100)

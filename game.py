@@ -48,7 +48,7 @@ class Game(object):
         self.goal = goal
         self.seed = seed
         self.static_board = static_board
-        if self.seed:
+        if self.seed is not None:
             random.seed(self.seed)
             np.random.seed(self.seed)
         self.matrix = matrix if matrix is not None else self.static_board.get_init_matrix(

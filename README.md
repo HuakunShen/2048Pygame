@@ -1,6 +1,6 @@
 # 2048Pygame
 
-<img src="README.assets/image-20201225010523110.png" alt="image-20201225010523110" width="50%;" />
+<img src="README.assets/2048AI.gif" alt="2048AI.gif" width="50%;" />
 
 
 

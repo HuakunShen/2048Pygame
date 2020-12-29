@@ -9,13 +9,27 @@ from constants import UP, DOWN, LEFT, RIGHT
 
 class Player(ABC):
     def __init__(self, game: Game, quiet: bool = False) -> None:
+        """
+        Init function for Player Class
+        :param game: Game: game object
+        :param quiet: bool: quiet mode, whether you want messages to be printed
+        """
         self._game = game
         self._quiet = quiet
 
+    @abstractmethod
     def get_move(self) -> Union[UP, DOWN, LEFT, RIGHT]:
+        """
+        :return: direction of movement: Union[UP, DOWN, LEFT, RIGHT]
+        """
         raise NotImplementedError
 
     def run(self, fps: int = 30) -> Tuple[int, int, float]:
+        """
+        main logic for running the game
+        :param fps: int: frame per second of animation
+        :return: Tuple[score, max value reached, runtime used]
+        """
         ui = GameUI(game=self._game, fps=fps)
         self._game.restart()
         ui.update_ui()
@@ -56,7 +70,7 @@ class RandomGuessAIPlayer(Player):
             game_clone1 = init_game_clone.clone()
             first_move = constants.ARROW_KEYS[first_move_i]
             matrix, score, changed = game_clone1.move(
-                direction=first_move, inplace=True)
+                action=first_move, inplace=True)
             if changed:
                 scores[first_move_i] += score
             else:

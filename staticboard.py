@@ -443,6 +443,11 @@ if __name__ == '__main__':
         [0, 2, 4, 0],
         [2, 0, 0, 2]
     ])
-    print(mat)
-    print(NumpyStaticBoard.set_random_cell(mat))
-    print(NumpyStaticBoard.get_random_empty_cell_coordinate(mat))
+    x = None
+    for i in range(100):
+        np.random.seed(2048)
+        if x is None:
+            x = NumpyStaticBoard.get_random_empty_cell_coordinate(mat)
+        else:
+            assert (x == NumpyStaticBoard.get_random_empty_cell_coordinate(mat)).all()
+    print(x)

@@ -1,8 +1,7 @@
-import random as rand
-import constants
 import pytest
-import pandas as pd
+import constants
 import numpy as np
+import pandas as pd
 from util import get_divider_str
 from staticboard import NumpyStaticBoard
 
@@ -46,8 +45,9 @@ class TestNumpyStaticBoard:
         assert NumpyStaticBoard.get_max_val(np.where(matrix > 0, 2048, matrix)) == 2048
 
     def test_get_random_empty_cell_coordinate(self, matrix: np.ndarray):
-        rand.seed(2048)
-        assert (NumpyStaticBoard.get_random_empty_cell_coordinate(matrix) == np.array([1, 2])).all()
+        for i in range(100):
+            np.random.seed(2048)
+            assert (NumpyStaticBoard.get_random_empty_cell_coordinate(matrix) == np.array([1, 3])).all()
 
     def test_get_empty_matrix(self):
         matrix = NumpyStaticBoard.get_empty_matrix(width=4, height=4)

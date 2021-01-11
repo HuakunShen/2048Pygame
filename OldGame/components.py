@@ -1,7 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
-from constants import *
+from constants import BG_COLOR_MAP, UP, DOWN, LEFT, RIGHT
 
 
 class Tile:

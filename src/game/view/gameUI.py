@@ -1,14 +1,11 @@
 import sys
-import copy
-import random
 import pygame
 import numpy as np
 from torch import Tensor
-from typing import Union, Tuple
-
+from typing import Union
 from src.game.controller.game import Game
-from src.game.utils import *
-from src.game.model.staticboardImpl import *
+from src.game.utils import KEY_MAP, K_q, get_bg_color, BG_COLOR
+
 
 class GameUI(object):
     def __init__(self, matrix: Union[Tensor, np.ndarray] = None, game: Game = None, width: int = 800, height: int = 950,
@@ -29,8 +26,8 @@ class GameUI(object):
         self.width = width
         self.height = height
         self.margin = margin
-        self.block_size = (self.width - (self.game.get_matrix().shape[0] + 1) * margin) // \
-                          self.game.get_matrix().shape[0]
+        self.block_size = (self.width - (self.game.get_matrix().shape[0] + 1) * margin) // self.game.get_matrix().shape[
+            0]
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('2048')
@@ -92,7 +89,6 @@ class GameUI(object):
         matrix = self.game.get_matrix()
         num_row, num_col = matrix.shape
         for row_i in range(num_row):
-            row = matrix[row_i, :]
             for col_i in range(num_col):
                 cell_val = int(matrix[row_i, col_i])
                 rect = pygame.Rect(col_i * self.block_size + (col_i + 1) * self.margin,
@@ -118,8 +114,3 @@ class GameUI(object):
         self._update_score()
         self._update_msg()
         pygame.display.flip()
-
-
-if __name__ == "__main__":
-    game = GameUI()
-    game.run()

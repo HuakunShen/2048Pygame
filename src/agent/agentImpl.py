@@ -1,7 +1,9 @@
+import numpy as np
+from typing import Union
 from src.agent.agent import Player
 from src.game.controller.game import Game
-from src.game.model.staticboardImpl import *
-from src.game.utils import *
+from src.game.utils import ARROW_KEYS, UP, DOWN, LEFT, RIGHT
+from src.game.model.staticboardImpl import NumpyStaticBoard, TorchStaticBoard
 
 
 class BacktrackingAIPlayer(Player):

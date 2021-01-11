@@ -74,8 +74,7 @@ class NumpyStaticBoard(StaticBoard):
             len(coordinates), 2, replace=False)]
         matrix = np.zeros((width, height))
         for i in range(2):
-            matrix[rand_coordinates[i][0], rand_coordinates[i]
-            [1]] = 2
+            matrix[rand_coordinates[i][0], rand_coordinates[i][1]] = 2
         return matrix
 
     @staticmethod
@@ -121,8 +120,8 @@ class NumpyStaticBoard(StaticBoard):
         return arr, score, changed
 
     @staticmethod
-    def move(matrix: np.ndarray, direction: Union[UP, DOWN, LEFT, RIGHT], inplace: bool = True) -> Tuple[
-        np.ndarray, int, bool]:
+    def move(matrix: np.ndarray, direction: Union[UP, DOWN, LEFT, RIGHT], inplace: bool = True) -> Tuple[np.ndarray,
+                                                                                                         int, bool]:
         score = 0
         changed = False
         if not inplace:

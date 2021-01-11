@@ -102,8 +102,10 @@ class StaticBoard(ABC):
         """
         Set a random cell within a matrix if there is any empty cell left
         :param matrix: a 2d integer numpy array representing a matrix
-        :param inplace: set the random cell inplace, if False, make a copy then make changes, else make changes to original matrix
-        :return: resulting matrix, a boolean whether a change has been made to matrix (if there is no empty cell, then no change is made)
+        :param inplace: set the random cell inplace, if False, make a copy then make changes, else make changes to
+        original matrix
+        :return: resulting matrix, a boolean whether a change has been made to matrix (if there is no empty cell, then
+        no change is made)
         """
         raise NotImplementedError
 
@@ -144,8 +146,8 @@ class StaticBoard(ABC):
 
     @staticmethod
     @abstractmethod
-    def move(matrix: np.ndarray, direction: Union[UP, DOWN, LEFT, RIGHT], inplace: bool = True) -> Tuple[
-        np.ndarray, int, bool]:
+    def move(matrix: np.ndarray, direction: Union[UP, DOWN, LEFT, RIGHT], inplace: bool = True) -> Tuple[np.ndarray,
+                                                                                                         int, bool]:
         """
         Given a matrix, make a move according to given direction
         :param matrix: a 2d integer numpy array representing a matrix

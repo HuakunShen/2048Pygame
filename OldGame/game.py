@@ -1,6 +1,6 @@
-import copy
+import pygame
 from gamestate import GameState
-from components import *
+from components import KEY_MAP
 
 
 class Game(object):

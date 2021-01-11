@@ -1,5 +1,4 @@
 def get_divider_str(msg: str, length: int = 100, line_ends: str = ''):
-    result = ""
     space_left = length - 2 - len(msg)
     if space_left <= 0:
         return msg

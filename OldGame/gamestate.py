@@ -3,7 +3,7 @@ import copy
 import random
 import constants
 import numpy as np
-from components import Board, Tile
+from components import Board
 
 
 class GameState:

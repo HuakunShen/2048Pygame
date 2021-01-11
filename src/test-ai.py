@@ -1,7 +1,8 @@
-import datetime
 import time
-
-from src.agent.agentImpl import *
+import datetime
+import pandas as pd
+from src.game.controller.game import Game
+from src.agent.agentImpl import BacktrackingAIPlayer, RandomGuessAIPlayer
 
 goal = 2048
 seeds = list(range(100))

@@ -1,7 +1,10 @@
 import copy
-
-from src.game.model.staticboardImpl import *
-from src.game.utils import *
+import random
+import numpy as np
+from torch import Tensor
+from typing import Tuple, Union
+from src.game.model.staticboardImpl import StaticBoard, NumpyStaticBoard
+from src.game.utils import SEED, DEFAULT_GOAL, ARROW_KEYS, UP, DOWN, LEFT, RIGHT, K_r, K_q
 
 
 class Game(object):

@@ -11,12 +11,12 @@ class BacktrackingAIPlayer(Player):
     in 100 seeds, the following are passing
             score  max_val     runtime
     seed
-    10    20368   2048.0  243.177021
     6     20328   2048.0  247.989939
     8     20396   2048.0  260.319733
+    10    20368   2048.0  243.177021
     14    20328   2048.0  241.503823
-    17    20264   2048.0  238.900709
     15    20168   2048.0  246.624875
+    17    20264   2048.0  238.900709
     23    20288   2048.0  249.540942
     28    20228   2048.0  249.040510
     30    20256   2048.0  245.020730
@@ -38,12 +38,12 @@ class BacktrackingAIPlayer(Player):
     79    20196   2048.0  235.604769
     80    20336   2048.0  242.382276
     81    20312   2048.0  252.015181
-    84    20352   2048.0  242.617993
     83    20436   2048.0  253.451177
+    84    20352   2048.0  242.617993
     87    20252   2048.0  243.486014
     88    20200   2048.0  242.957299
-    95    20248   2048.0  177.931139
     94    20304   2048.0  210.975342
+    95    20248   2048.0  177.931139
     """
 
     def __init__(self, game: Game, search_length: int = 10, quiet: bool = False,
@@ -58,18 +58,12 @@ class BacktrackingAIPlayer(Player):
         if depth == self.search_depth:
             return 0
         score = 0
-        scores1, scores2 = [], []
         for i, move in enumerate(ARROW_KEYS):
             result_matrix, curr_score, changed = self.board.move(
                 matrix=matrix, direction=move, inplace=False)
             self.board.set_random_cell(result_matrix, inplace=True)
-            # scores1.append(curr_score)
-            # scores2.append(self.recurse_tree(result_matrix, depth + 1))
-            # score += curr_score
-            # score += self.recurse_tree(result_matrix, depth + 1)
             score = max(score, curr_score +
                         self.recurse_tree(result_matrix, depth + 1))
-        # return sum(scores1) + sum(scores2)
         return score
 
     def get_move(self) -> Union[UP, DOWN, LEFT, RIGHT]:

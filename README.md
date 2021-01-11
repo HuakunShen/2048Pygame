@@ -2,6 +2,10 @@
 
 <img src="README.assets/2048AI.gif" alt="2048AI.gif" width="50%;" />
 
+## AI Players
+
+### RandomGuessAIPlayer
+
 `RandomGuessAIPlayer` has accuracy of 4%.
 
 ```
@@ -16,6 +20,8 @@ seed
 81    20224   2048.0  36.138344
 ```
 
+### BacktrackingAIPlayer
+
 `BacktrackingAIPlayer` has accuracy of 32%.
 
 | Search Depth | Pass Rate | Time (100 seeds) |
@@ -28,6 +34,25 @@ seed
 Observation:
 Pass Rate and Runtime both increase with Search Depth.
 As Search Depth increases by 1, the runtime increases by around 4 times (5 times of its previous depth), and pass rate's increasing rate drops as search depth increases.
+
+
+<details>
+  <summary>Search Depth = 2</summary>
+
+```
+Search Depth=2
+Accuracy=4%
+Total Time Taken: 0:00:23.480000
+Average Time Taken: 0.23s
+      score  max_val   runtime
+seed                          
+52    20180   2048.0  3.376090
+86    20336   2048.0  3.415089
+91    20612   2048.0  3.161147
+97    20172   2048.0  2.773934
+```
+</details>
+
 
 <details>
   <summary>Search Depth = 3</summary>
@@ -101,8 +126,8 @@ seed
   <summary>Search Depth = 5</summary>
 
 ```
-With search depth=5
-accuracy is around 32%
+Search Depth=5
+Accuracy=32%
 Total Time Taken: 0:31:10.410000
 Average Time Taken: 18.7s
 in 100 seeds, the following are passing

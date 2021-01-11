@@ -1,16 +1,14 @@
-import time
-import tqdm
 import datetime
-import pandas as pd
-from game import Game
-import multiprocessing
-from fastai.core import parallel
-from player import RandomGuessAIPlayer, BacktrackingAIPlayer
+import time
+
+from src.agent.agentImpl import *
 
 goal = 2048
 seeds = list(range(100))
 # Player = RandomGuessAIPlayer
 player_type = "random"
+
+
 # player_type = "backtracking"
 
 
@@ -45,7 +43,7 @@ if __name__ == '__main__':
     # with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
     #     results = list(tqdm.tqdm(p.imap(run, seeds), total=len(seeds)))
 
-    results = parallel(run, seeds)
+    results = [run(i) for i in seeds]
 
     for result in results:
         df.loc[result[0]] = {"score": result[1],

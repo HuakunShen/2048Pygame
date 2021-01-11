@@ -19,7 +19,7 @@ nvidia-ml-py3==7.352.0
 olefile==0.46
 packaging==20.8
 pandas==1.2.0
-Pillow @ file:///tmp/build/80754af9/pillow_1603822255246/work
+Pillow
 pygame==2.0.1
 pyparsing==2.4.7
 python-dateutil==2.8.1
@@ -27,11 +27,11 @@ pytz==2020.5
 PyYAML==5.3.1
 requests==2.25.1
 scipy==1.5.4
-six @ file:///tmp/build/80754af9/six_1605205327372/work
+six
 soupsieve==2.1
 torch==1.7.1
 torchaudio==0.7.0a0+a853dff
 torchvision==0.8.2
 tqdm==4.55.0
-typing-extensions @ file:///tmp/build/80754af9/typing_extensions_1598376058250/work
+typing-extensions
 urllib3==1.26.2

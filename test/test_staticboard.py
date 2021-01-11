@@ -1,9 +1,8 @@
 import pytest
-import constants
+from src.game import utils
 import numpy as np
 import pandas as pd
-from util import get_divider_str
-from staticboard import NumpyStaticBoard
+from src.game.model.staticboardImpl import NumpyStaticBoard
 
 
 class TestNumpyStaticBoard:
@@ -110,7 +109,7 @@ class TestNumpyStaticBoard:
     def test_move(self, matrix):
         # test inplace
         matrix_copy = matrix.copy()
-        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=constants.RIGHT, inplace=True)
+        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=utils.RIGHT, inplace=True)
         assert id(matrix) == id(matrix_)
         assert (matrix_ == np.array([[0, 0, 0, 4],
                                      [0, 0, 0, 0],
@@ -118,26 +117,26 @@ class TestNumpyStaticBoard:
                                      [0, 0, 0, 4]])).all()
         matrix = matrix_copy.copy()
         # test non-inplace
-        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=constants.RIGHT, inplace=False)
+        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=utils.RIGHT, inplace=False)
         assert id(matrix) != id(matrix_)
         assert (matrix_ == np.array([[0, 0, 0, 4],
                                      [0, 0, 0, 0],
                                      [0, 0, 2, 4],
                                      [0, 0, 0, 4]])).all()
         # test 3 other directions
-        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=constants.UP, inplace=False)
+        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=utils.UP, inplace=False)
         assert id(matrix) != id(matrix_)
         assert (matrix_ == np.array([[2, 2, 2, 4],
                                      [0, 0, 4, 0],
                                      [0, 0, 0, 0],
                                      [0, 0, 0, 0]])).all()
-        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=constants.DOWN, inplace=False)
+        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=utils.DOWN, inplace=False)
         assert id(matrix) != id(matrix_)
         assert (matrix_ == np.array([[0, 0, 0, 0],
                                      [0, 0, 0, 0],
                                      [0, 0, 2, 0],
                                      [2, 2, 4, 4]])).all()
-        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=constants.LEFT, inplace=False)
+        matrix_, score, changed = NumpyStaticBoard.move(matrix, direction=utils.LEFT, inplace=False)
         assert id(matrix) != id(matrix_)
         assert (matrix_ == np.array([[4, 0, 0, 0],
                                      [0, 0, 0, 0],

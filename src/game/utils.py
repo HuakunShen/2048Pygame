@@ -1,3 +1,5 @@
+from typing import Union
+
 import pygame
 
 SEED = 2048
@@ -13,7 +15,6 @@ K_r = "r"
 K_q = "q"
 
 ARROW_KEYS = [UP, DOWN, LEFT, RIGHT]
-
 
 KEY_MAP = {
     pygame.K_r: K_r,
@@ -40,3 +41,20 @@ CELL_BG_COLOR_MAP = {
     1024: (230, 185, 38),
     2048: (230, 181, 19)
 }
+
+
+def get_bg_color(val: Union[int, str]):
+    """
+    Get the background color of 2048 game
+    :param val: value of cell, different values have different background color
+    :return: a Tuple of RGB, chosen from constants.CELL_BG_COLOR_MAP
+    """
+    if type(val) is int and val > 2048:
+        bg_color = CELL_BG_COLOR_MAP[64]
+    elif type(val) is int and val < 0:
+        raise ValueError("Negative Number is invalid")
+    elif val in CELL_BG_COLOR_MAP:
+        bg_color = CELL_BG_COLOR_MAP[val]
+    else:
+        raise ValueError(f"Invalid Input: {val}")
+    return bg_color

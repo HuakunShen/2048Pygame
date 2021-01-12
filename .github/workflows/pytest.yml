@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - pytest-workflow
+      - pytest
     paths:
       - ".github/workflows/**"
       - "src/**"

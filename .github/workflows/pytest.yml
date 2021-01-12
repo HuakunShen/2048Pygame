@@ -8,6 +8,10 @@ on:
     branches:
       - master
       - pytest-workflow
+#    paths:
+#      - ".github/workflows/**"
+#      - "src/**"
+#      - "tests/**"
   pull_request:
     branches: [master]
 

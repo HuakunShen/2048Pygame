@@ -1,7 +1,7 @@
 import pytest
-from src.game import utils
 import numpy as np
 import pandas as pd
+from src.game import utils
 from src.game.model.staticboardImpl import NumpyStaticBoard
 
 

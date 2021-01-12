@@ -16,12 +16,12 @@ player_type = "random"
 def get_player(g: Game):
     global player_type
     if player_type == "backtracking":
-        return BacktrackingAIPlayer(game=g, search_length=5, quiet=True, ui=False)
+        return BacktrackingAIPlayer(game=g, search_depth=5, quiet=True, ui=False)
     elif player_type == "random":
         return RandomGuessAIPlayer(
             game=g, searches_per_move=20, search_length=10, quiet=True, ui=False)
     else:
-        raise ValueError
+        raise ValueError("wrong palyer type")
 
 
 def run(seed, i=0):

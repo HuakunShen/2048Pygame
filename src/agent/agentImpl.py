@@ -48,12 +48,12 @@ class BacktrackingAIPlayer(Player):
     95    20248   2048.0  177.931139
     """
 
-    def __init__(self, game: Game, search_length: int = 10, quiet: bool = False,
+    def __init__(self, game: Game, search_depth: int = 10, quiet: bool = False,
                  ui: bool = True, torch=False):
         super().__init__(game, quiet, ui)
         if not self._quiet:
             print("Init Backtracking AI Player")
-        self.search_depth = search_length
+        self.search_depth = search_depth
         self.board = TorchStaticBoard if torch else NumpyStaticBoard
 
     def recurse_tree(self, matrix: np.ndarray, depth: int) -> int:

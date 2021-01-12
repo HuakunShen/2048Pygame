@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - pytest-workflow
+      - pytest
     paths:
       - ".github/workflows/**"
       - "src/**"
@@ -36,4 +36,5 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          pytest tests
+          coverage run -m pytest  tests/
+          coverage report
